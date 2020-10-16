@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
-const products = require('./Products');
 
 const ManufacturerSchema = mongoose.Schema({
     name: String,
     address: String,
     phone: Number,
-    products: products
+    products: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Products'
+    }]
 })
+
+module.exports = mongoose.model('Manufacturers', ManufacturerSchema, 'manufacturers')

@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Products');
+const Manufacturer = require('../models/Manufacturers');
 
-//ENTERED: /POSTS/
+//ENTERED: /products/
 
 //Gets back all the products:
 router.get('/', async (req, res) => {
@@ -30,8 +31,19 @@ router.post('/add', async (req, res) => {
         name: req.body.name,
         category: req.body.category,
         price: req.body.price,
-        quantity: req.body.quantity
+        quantity: req.body.quantity,
+        manufacturer: req.body.manufacturer
     });
+
+    //update manufacure product array
+    // const manufacturer = Manufacturer.findOne({ _id: req.body.manufacturer }, (err, foundManufacturer) => {
+    //     if (err) {
+    //         res.status(500).send()
+    //     } else {
+    //         foundManufacturer.products.push(product)
+    //         manufacturer.save();
+    //     }
+    // })
     try {
         const savedProduct = await product.save();
         res.json(savedProduct)
@@ -54,11 +66,26 @@ router.delete('/:productId', async (req, res) => {
 router.patch('/:productId/:quantity', async (req, res) => {
     console.log(req.params)
     try {
-        const postUpdate = await Product.findOneAndUpdate({ _id: req.params.productId }, {$set: {quantity: req.params.quantity}});
-        res.json(postUpdate);
+        const productUpdate = await Product.findOneAndUpdate({ _id: req.params.productId }, {$set: {quantity: req.params.quantity}});
+        res.json(productUpdate);
     } catch (error) {
         res.json(error);
     }
+});
+
+//Show Products by Manufacturer
+router.get('/productsByMan/:manId', async (req, res) => {
+    try {
+        await Product.find({ manufacturer: req.params.manId })
+        // productByManufac.populate('products')
+        .exec((err, products) => {
+            res.json(products)
+        })
+    } catch(err) {
+        res.json(err)
+    }
 })
+
+
 
 module.exports = router;

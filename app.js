@@ -7,13 +7,15 @@ require('dotenv/config')
 
 //IMPORT ROUTES
 const productRoutes = require('./router/products');
+const manufacRoutes = require('./router/manufacturers');
 
 //MIDDLEWARES: Functions that execute when routes are hit
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-app.use('/products', productRoutes)
+app.use('/products', productRoutes);
+app.use('/manufacturers', manufacRoutes);
 
 //ROUTES
 app.get('/', (req, res) => {
